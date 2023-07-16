@@ -50,22 +50,12 @@ function _auto_notify_message() {
     body="$(_auto_notify_format "$text" "$command" "$elapsed" "$exit_code")"
 
     if [[ "$platform" == "Linux" ]]; then
-        local urgency="normal"
-        local transient="--hint=int:transient:1"
-        if [[ "$exit_code" != "0" ]]; then
-            urgency="critical"
-            transient=""
-        fi
-        notify-send "$title" "$body" --app-name=zsh $transient "--urgency=$urgency" "--expire-time=$AUTO_NOTIFY_EXPIRE_TIME"
+        echo -e "$title\n$body" | tgsend -
     elif [[ "$platform" == "Darwin" ]]; then
-        osascript \
-          -e 'on run argv' \
-          -e 'display notification (item 1 of argv) with title (item 2 of argv)' \
-          -e 'end run' \
-          "$body" "$title"
+        echo -e "$title\n$body" | tgsend -
     else
         printf "Unknown platform for sending notifications: $platform\n"
-        printf "Please post an issue on gitub.com/MichaelAquilina/zsh-auto-notify/issues/\n"
+        printf "Please post an issue on gitub.com/hwenwur/zsh-auto-notify/issues/\n"
     fi
 }
 
@@ -161,8 +151,8 @@ _auto_notify_reset_tracking
 
 
 platform="$(uname)"
-if [[ "$platform" == "Linux" ]] && ! type notify-send > /dev/null; then
-    printf "'notify-send' must be installed for zsh-auto-notify to work\n"
+if [[ "$platform" == "Linux" ]] && ! type tgsend > /dev/null; then
+    printf "'tgsend' must be installed for zsh-auto-notify to work\n"
     printf "Please install it with your relevant package manager\n"
 else
     enable_auto_notify
