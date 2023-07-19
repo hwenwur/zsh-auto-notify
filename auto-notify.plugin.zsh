@@ -24,6 +24,7 @@ export AUTO_NOTIFY_VERSION="0.8.1"
         'tmux'
         'tensorboard'
         'ipython'
+        'nvtop'
     )
 
 function _auto_notify_format() {
